@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}이체하기{% endblock %}
+{% block content %}
+<h2>이체하기</h2>
+<p>현재 잔액: {{ format_price(user.balance_cents) }}</p>
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  받는 사람: <input type="text" name="receiver" required><br>
+  금액: <input type="text" name="amount" required><br>
+  <button type="submit">이체</button>
+</form>
+{% endblock %}

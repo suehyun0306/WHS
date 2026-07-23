@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 {% block title %}환영합니다{% endblock %}
 {% block content %}
-<h1>My Market에 오신 것을 환영합니다</h1>
-<p><a href="{{ url_for('login') }}">로그인</a> 또는 <a href="{{ url_for('register') }}">회원가입</a> 해주세요.</p>
+<div class="page-hero home-hero">
+  <div class="hero-copy">
+    <span class="eyebrow">따뜻한 장터</span>
+    <h1>내 주변 보물을 함께 나누는 공간</h1>
+    <p>심플하고 친근한 중고 거래 플랫폼입니다. 원하는 물건을 찾고, 간편하게 거래해보세요.</p>
+    <div class="hero-buttons">
+      <a class="button" href="{{ url_for('products') }}">상품 목록 보기</a>
+      <a class="button button-secondary" href="{{ url_for('register') }}">회원가입</a>
+    </div>
+  </div>
+  <div class="hero-illustration">
+    <div class="illustration-card">즐거운 거래</div>
+  </div>
+</div>
 {% endblock %}

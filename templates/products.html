@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}상품 목록{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div class="hero-copy">
+    <span class="eyebrow">오늘의 추천</span>
+    <h1>모두가 함께하는 중고 장터</h1>
+    <p>친근한 거래 환경에서 새 보물과 만나는 공간입니다. 마음에 드는 물건을 찾아보세요.</p>
+  </div>
+  <div class="hero-actions">
+    <a class="button" href="{{ url_for('register') }}">회원가입하고 거래 시작하기</a>
+    <a class="button button-secondary" href="{{ url_for('login') }}">로그인</a>
+  </div>
+</div>
+
+<div class="toolbar">
+  <form method="get" action="{{ url_for('products') }}">
+    <input type="text" name="q" value="{{ query }}" placeholder="찾고 싶은 상품을 검색해보세요" />
+    <button type="submit">검색</button>
+  </form>
+</div>
+
+<div class="product-grid">
+  {% for product in products %}
+    <article class="product-card">
+      <div class="product-card-top">
+        <h3><a href="{{ url_for('view_product', product_id=product.id) }}">{{ product.title }}</a></h3>
+        <span class="badge">판매자 {{ product.seller_name }}</span>
+      </div>
+      <p class="product-description">{{ product.description[:120] }}{% if product.description|length > 120 %}...{% endif %}</p>
+      <div class="product-card-foot">
+        <span class="price">{{ format_price(product.price_cents) }}</span>
+        <a class="button button-small" href="{{ url_for('view_product', product_id=product.id) }}">자세히 보기</a>
+      </div>
+    </article>
+  {% else %}
+    <div class="empty-state">
+      <h3>현재 판매 중인 상품이 없습니다.</h3>
+      <p>나중에 다시 확인하거나, 먼저 회원가입 후 직접 상품을 등록해보세요.</p>
+      <a class="button" href="{{ url_for('new_product') }}">상품 등록하러 가기</a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -3,12 +3,18 @@
 {% block content %}
 <h2>대시보드</h2>
 <h3>등록된 상품</h3>
+<form method="get" action="{{ url_for('dashboard') }}">
+  <input type="text" name="q" value="{{ query }}" placeholder="상품 검색" />
+  <button type="submit">검색</button>
+</form>
 <ul>
   {% for product in products %}
     <li>
       <a href="{{ url_for('view_product', product_id=product.id) }}">{{ product.title }}</a>
-      - 가격: {{ product.price }}
+      - 가격: {{ format_price(product.price_cents) }}
     </li>
+  {% else %}
+    <li>검색 결과가 없습니다.</li>
   {% endfor %}
 </ul>
 <p><a href="{{ url_for('new_product') }}">새 상품 등록</a></p>
@@ -17,28 +23,6 @@
 <div id="chat">
   <ul id="messages"></ul>
   <input id="chat_input" type="text" placeholder="메시지를 입력하세요">
-  <button onclick="sendMessage()">전송</button>
+  <button id="chat_send" type="button">전송</button>
 </div>
-
-<script type="text/javascript">
-  var socket = io();
-  socket.on('connect', function() {
-    console.log("채팅 서버에 연결됨");
-  });
-  socket.on('message', function(data) {
-    var messages = document.getElementById('messages');
-    var item = document.createElement('li');
-    item.textContent = data.username + ": " + data.message;
-    messages.appendChild(item);
-    window.scrollTo(0, document.body.scrollHeight);
-  });
-  function sendMessage() {
-    var input = document.getElementById('chat_input');
-    var message = input.value;
-    if (message) {
-      socket.emit('send_message', { 'username': "{{ user.username }}", 'message': message });
-      input.value = "";
-    }
-  }
-</script>
 {% endblock %}

@@ -3,6 +3,21 @@
 {% block content %}
 <h2>{{ product.title }}</h2>
 <p>{{ product.description }}</p>
-<p>가격: {{ product.price }}</p>
+<p>가격: {{ format_price(product.price_cents) }}</p>
 <p>판매자: {{ seller.username if seller else '알 수 없음' }}</p>
+<p>상태: {% if product.is_sold %}판매 완료{% elif product.is_blocked %}거래 불가{% else %}판매 중{% endif %}</p>
+{% if current_user and (current_user.role == 'admin' or current_user.id == product.seller_id) %}
+  <p>
+    <a href="{{ url_for('edit_product', product_id=product.id) }}">상품 수정</a>
+  </p>
+  <form method="post" action="{{ url_for('delete_product', product_id=product.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit">상품 삭제</button>
+  </form>
+{% elif current_user and current_user.id != product.seller_id and not product.is_blocked and not product.is_sold %}
+  <form method="post" action="{{ url_for('buy_product', product_id=product.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit">구매하기</button>
+  </form>
+{% endif %}
 {% endblock %}

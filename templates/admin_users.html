@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}관리자 - 사용자 관리{% endblock %}
+{% block content %}
+<h2>사용자 관리</h2>
+<table>
+  <thead>
+    <tr>
+      <th>사용자명</th>
+      <th>권한</th>
+      <th>잔액</th>
+      <th>차단 상태</th>
+      <th>가입일</th>
+      <th>관리</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ format_price(user.balance_cents) }}</td>
+        <td>{{ '차단됨' if user.is_blocked else '정상' }}</td>
+        <td>{{ user.created_at }}</td>
+        <td>
+          {% if user.role != 'admin' %}
+            <form method="post" action="{{ url_for('admin_toggle_user', user_id=user.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit">차단/해제</button>
+            </form>
+          {% else %}
+            관리자
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5">등록된 사용자가 없습니다.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

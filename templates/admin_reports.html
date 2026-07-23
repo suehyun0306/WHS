@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}관리자 - 신고 관리{% endblock %}
+{% block content %}
+<h2>신고 관리</h2>
+<table>
+  <thead>
+    <tr>
+      <th>신고자</th>
+      <th>타입</th>
+      <th>대상 ID</th>
+      <th>사유</th>
+      <th>상태</th>
+      <th>등록일</th>
+      <th>조치</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for report in reports %}
+      <tr>
+        <td>{{ report.reporter_name or report.reporter_id }}</td>
+        <td>{{ report.target_type }}</td>
+        <td>
+          {% if report.target_type == 'product' %}
+            {{ report.target_product_title or report.target_id }}
+          {% else %}
+            {{ report.target_user_name or report.target_id }}
+          {% endif %}
+        </td>
+        <td>{{ report.reason }}</td>
+        <td>{{ report.status }}</td>
+        <td>{{ report.created_at }}</td>
+        <td>
+          {% if report.status == 'pending' %}
+            <form method="post" action="{{ url_for('resolve_report', report_id=report.id) }}" style="display:inline-block;">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" name="action" value="approve">승인</button>
+            </form>
+            <form method="post" action="{{ url_for('resolve_report', report_id=report.id) }}" style="display:inline-block;">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" name="action" value="dismiss">기각</button>
+            </form>
+          {% else %}
+            처리 완료
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7">처리할 신고가 없습니다.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
